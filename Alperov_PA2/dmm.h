@@ -16,21 +16,43 @@ requirments.
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct duration
+
+typedef struct duration // struct for Duration of music
 {
 	int minutes;
 	int seconds;
 }Duration;
 
-typedef struct record
+
+typedef struct record // struct for music playlist and everything needed to know about music
 {
-	/*Artist – a string
-		Album title – a string
-		Song title – a string
-		Genre – a string
-		Song length - a struct Duration type consisting of seconds and minutes, both
-		integers
-		Number times played – an integer
-		Rating – an integer(1 – 5)*/
+	char artist[60];
+	char album_title[60];
+	char song_title[60];
+	char genre[60];
+	int times_played;
+	int rating;
+	Duration song_length;
+
+
 }Record;
+
+
+typedef struct node Node; // Node to move foward or previous on songs data
+
+typedef struct node
+{
+	Record data;
+	Node* next;
+	Node* prev;
+}Node;    
+
+void main_menu(void); // main menu of the DMM
+
+Node* makeNode(Record newData); // Node that gathers new data to our DMM
+
+int insertFront(Node **pHead, Record newData); // inserts a new Node that adds on to the New Data provided for DMM
+
+void printList(Node *pHead); // A printed list of the records of the songs.
+
 #endif
