@@ -45,14 +45,25 @@ typedef struct node
 	Record data;
 	Node* next;
 	Node* prev;
-}Node;    
+}Node;
 
 void main_menu(void); // main menu of the DMM
 
 Node* makeNode(Record newData); // Node that gathers new data to our DMM
 
-int insertFront(Node **pHead, Record newData); // inserts a new Node that adds on to the New Data provided for DMM
+int insertFront(Node** pHead, Record newData); // inserts a new Node that adds on to the New Data provided for DMM
 
-void printList(Node *pHead); // A printed list of the records of the songs.
+void printList(Node* pHead); // A printed list of the records of the songs.
+
+int load_music_data(Node **pHead, FILE *infile); // Will load up music data from the .csv file
+
+int store_music_data(Node* pHead); // Will store up music data gathered from the .csv file
+
+void display_command(Node* pHead); // Displays records with printList and searches specific records
+
+Node* search_by_artist(Node* pHead, char* artist); // Searches by artist so itll display in display_command
+
+void edit_command(Node* pHead); // Edit command for diplay to change visuals
+
 
 #endif
