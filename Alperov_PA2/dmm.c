@@ -120,3 +120,71 @@ int load_music_data(Node** pHead, FILE* infile)
 	return 1;
 }
 
+int store_music_data(Node* pHead)
+{
+	FILE* outfile = fopen("musicPlayList.csv", "w");
+	if (outfile == NULL)
+	{
+		return 0;
+	}
+
+	Node* pCur = pHead;
+	while (pCur != NULL)
+	{
+		fprintf(outfile, "\"%s\",%s,%s,%s,%d:%02d,%d,%d\n",
+			pCur->data.artist, pCur->data.album_title,
+			pCur->data.song_title, pCur->data.genre,
+			pCur->data.song_length.minutes, pCur->data.song_length.seconds,
+			pCur->data.times_played, pCur->data.rating);
+
+		pCur = pCur->next;
+	}
+	fclose(outfile);
+	return 1;
+}
+
+void display_command(Node* pHead)
+{	
+	Node*  pCur = pHead;
+	if (pCur == NULL)
+	{
+		puts("List is empty.");
+		return;
+	}
+		printList(pHead);
+}
+
+Node* search_by_artist(Node* pHead, char* artist)
+{
+	Node* pCur = pHead;
+	
+	while (pCur != NULL)
+	{
+		if (strcmp(pCur->data.artist, artist) == 0)
+		{
+			return pCur;
+		}
+		pCur = pCur->next;
+	}
+	return NULL;
+}
+
+void edit_command(Node* pHead)
+{
+	char name[60];
+	printf("Enter Artist to edit: \n");
+	fgets(name, 60, stdin);
+	name[strcspn(name, '\0')] = 0;
+
+	Node* edit_record = search_by_artist(pHead, name);
+	if (edit_record != NULL)
+	{
+
+	}
+	else
+	{
+		printf("No records found for this artist name %s.\n", name);
+	}
+}
+
+
