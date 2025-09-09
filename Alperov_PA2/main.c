@@ -11,26 +11,31 @@ requirments.
 #include "dmm.h"
 
 int main(void)
-	
+
 {
     FILE* infile = fopen("musicPlayList.csv", "r");
     if (infile != NULL)
     {
         puts("Infile opened successfully");
     }
+    else if (infile == NULL)
+    {
+        puts("Infile did not open");
+    }
 
-	Node* pHead = NULL; // This starts it empty
+    Node* pHead = NULL; // This starts it empty
 
     Record r1 = { "Swift, Taylor", "1989", "Shake it Off", "Pop", 12, 3, {3, 35} };
-    
+
 
     // Insert them into the list
     insertFront(&pHead, r1);
-   
+
 
     // Print list to confirm it works
     printList(pHead);
 
 
-	return 0;
+    return 0;
 }
+
