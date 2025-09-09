@@ -8,54 +8,115 @@ such as load, store, insert and more.
 We will be gathering data from .csv files to converting them to strings which will help us satisfy the
 requirments.
 */
-#ifndef DMM_H
-#define DMM_H
+#include "dmm.h"
 
-#define _CRT_SECURE_NO_WARNINGS
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-
-typedef struct duration // struct for Duration of music
+void main_menu(void)
 {
-	int minutes;
-	int seconds;
-}Duration;
+	printf("              ---------------------------------Welcome to Digital Music Manager---------------------------------\n");
+	// Will eventually get user input from to execute command.
+}
 
-
-typedef struct record // struct for music playlist and everything needed to know about music
+Node* makeNode(Record newData)
 {
-	char artist[60];
-	char album_title[60];
-	char song_title[60];
-	char genre[60];
-	int times_played;
-	int rating;
-	Duration song_length;
+	Node* pMem = (Node*)malloc(sizeof(Node));
 
+	if (pMem != NULL)
+	{
+		pMem->data = newData;
+		pMem->next = NULL;
+		pMem->prev = NULL;
+	}
+	return pMem;
+}
 
-}Record;
-
-
-typedef struct node Node; // Node to move foward or previous on songs data
-
-typedef struct node
+int insertFront(Node** pHead, Record newData)
 {
-	Record data;
-	Node* next;
-	Node* prev;
-}Node;
+	Node* pMem = makeNode(newData);
+	if (pMem == NULL)
+	{
+		return 0;
+	}
 
-void main_menu(void); // main menu of the DMM
+	pMem->next = *pHead;
+	pMem->prev = NULL;
 
-Node* makeNode(Record newData); // Node that gathers new data to our DMM
+	if (pMem != NULL)
+	{
+		(*pHead)->prev = pMem;
+	}
+	*pHead = pMem;
 
-int insertFront(Node** pHead, Record newData); // inserts a new Node that adds on to the New Data provided for DMM
+	return 1;
+}
 
-void printList(Node* pHead); // A printed list of the records of the songs.
+void printList(Node* pHead)
+{
+	Node* pointer = pHead;
+	if (pointer == NULL)
+	{
+		printf("List is empty.\n");
+		return;
+	}
+	while (pointer != NULL)
+	{
+		printf("Artist: %s\n", pointer->data.artist);
+		printf("Album: %s\n", pointer->data.album_title);
+		printf("Song: %s\n", pointer->data.song_title);
+		printf("Genre: %s\n", pointer->data.genre);
+		printf("Times Played: %d\n\n", pointer->data.times_played);
+		printf("Duration:  %d:%02d\n", pointer->data.song_length.minutes, pointer->data.song_length.seconds);
+		printf("Rating: %d\n", pointer->data.rating);
 
-int load_music_data(Node **pHead, FILE *infile); // Will load up music data from the .csv file
+		pointer = pointer->next;
 
-#endif
+	}
+}
+
+int load_music_data(Node** pHead, FILE* infile)
+{	
+	char record[100];
+	while (fgets(record, 100, infile))
+	{
+		Record temp;
+		char* token;
+
+		//ARTIST
+		token = strtok(record, ",");
+		strcpy(temp.artist, token);
+
+		//ALBUM TITLE
+		token = strtok(NULL, ",");
+		strcpy(temp.album_title, token);
+
+		//SONG TITLE
+		token = strtok(NULL, ",");
+		strcpy(temp.song_title, token);
+		
+		//GENRE
+		token = strtok(NULL, ",");
+		strcpy(temp.genre, token);
+
+		//DURATION
+		token = strtok(NULL, ":");
+		temp.song_length.minutes = atoi(token);
+		token = strtok(NULL, ",");
+		temp.song_length.seconds = atoi(token);
+
+		//TIMES PLAYED
+		token = strtok(NULL, ",");
+		temp.times_played = atoi(token);
+
+		//RATING
+		token = strtok(NULL, ",");
+		temp.rating = atoi(token);
+
+		Node* pMem = makeNode(temp);
+		if (pMem != NULL)
+		{
+			insertFront(pHead, temp); 
+		}
+
+	}
+	return 1;
+}
 
