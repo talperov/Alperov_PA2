@@ -39,7 +39,7 @@ int insertFront(Node** pHead, Record newData)
 
 	pMem->next = *pHead;
 	pMem->prev = NULL;
-	
+
 	if (pMem != NULL)
 	{
 		(*pHead)->prev = pMem;
@@ -70,4 +70,52 @@ void printList(Node* pHead)
 		pointer = pointer->next;
 
 	}
+}
+
+int load_music_data(Node** pHead, FILE* infile)
+{	
+	char record[100];
+	while (fgets(record, 100, infile))
+	{
+		Record temp;
+		char* token;
+
+		//ARTIST
+		token = strtok(record, ",");
+		strcpy(temp.artist, token);
+
+		//ALBUM TITLE
+		token = strtok(NULL, ",");
+		strcpy(temp.album_title, token);
+
+		//SONG TITLE
+		token = strtok(NULL, ",");
+		strcpy(temp.song_title, token);
+		
+		//GENRE
+		token = strtok(NULL, ",");
+		strcpy(temp.genre, token);
+
+		//DURATION
+		token = strtok(NULL, ":");
+		temp.song_length.minutes = atoi(token);
+		token = strtok(NULL, ",");
+		temp.song_length.seconds = atoi(token);
+
+		//TIMES PLAYED
+		token = strtok(NULL, ",");
+		temp.times_played = atoi(token);
+
+		//RATING
+		token = strtok(NULL, ",");
+		temp.rating = atoi(token);
+
+		Node* pMem = makeNode(temp);
+		if (pMem != NULL)
+		{
+			insertFront(pHead, temp); 
+		}
+
+	}
+	return 1;
 }
