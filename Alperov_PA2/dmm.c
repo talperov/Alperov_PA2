@@ -10,12 +10,14 @@ requirments.
 */
 #include "dmm.h"
 
+// main menu of the DMM
 void main_menu(void)
 {
 	printf("              ---------------------------------Welcome to Digital Music Manager---------------------------------\n");
 	// Will eventually get user input from to execute command.
 }
 
+// Node that gathers new data to our DMM
 Node* makeNode(Record newData)
 {
 	Node* pMem = (Node*)malloc(sizeof(Node));
@@ -29,6 +31,7 @@ Node* makeNode(Record newData)
 	return pMem;
 }
 
+// inserts a new Node that adds on to the New Data provided for DMM
 int insertFront(Node** pHead, Record newData)
 {
 	Node* pMem = makeNode(newData);
@@ -49,6 +52,7 @@ int insertFront(Node** pHead, Record newData)
 	return 1;
 }
 
+// A printed list of the records of the songs.
 void printList(Node* pHead)
 {
 	Node* pointer = pHead;
@@ -72,8 +76,9 @@ void printList(Node* pHead)
 	}
 }
 
+// Will load up music data from the.csv file
 int load_music_data(Node** pHead, FILE* infile)
-{	
+{
 	char record[100];
 	while (fgets(record, 100, infile))
 	{
@@ -91,7 +96,7 @@ int load_music_data(Node** pHead, FILE* infile)
 		//SONG TITLE
 		token = strtok(NULL, ",");
 		strcpy(temp.song_title, token);
-		
+
 		//GENRE
 		token = strtok(NULL, ",");
 		strcpy(temp.genre, token);
@@ -113,13 +118,14 @@ int load_music_data(Node** pHead, FILE* infile)
 		Node* pMem = makeNode(temp);
 		if (pMem != NULL)
 		{
-			insertFront(pHead, temp); 
+			insertFront(pHead, temp);
 		}
 
 	}
 	return 1;
 }
 
+// Will store up music data gathered from the.csv file
 int store_music_data(Node* pHead)
 {
 	FILE* outfile = fopen("musicPlayList.csv", "w");
@@ -143,21 +149,22 @@ int store_music_data(Node* pHead)
 	return 1;
 }
 
+// Displays records with printList and searches specific records
 void display_command(Node* pHead)
-{	
-	Node*  pCur = pHead;
-	if (pCur == NULL)
+{
+	if (pHead == NULL)
 	{
 		puts("List is empty.");
 		return;
 	}
-		printList(pHead);
+	printList(pHead);
 }
 
+// Searches by artist so itll display in display_command
 Node* search_by_artist(Node* pHead, char* artist)
 {
 	Node* pCur = pHead;
-	
+
 	while (pCur != NULL)
 	{
 		if (strcmp(pCur->data.artist, artist) == 0)
@@ -169,16 +176,47 @@ Node* search_by_artist(Node* pHead, char* artist)
 	return NULL;
 }
 
+// Edit command for diplay to change visuals
 void edit_command(Node* pHead)
 {
 	char name[60];
 	printf("Enter Artist to edit: \n");
 	fgets(name, 60, stdin);
-	name[strcspn(name, '\0')] = 0;
+	name[strcspn(name, '\n')] = 0;
 
 	Node* edit_record = search_by_artist(pHead, name);
+
 	if (edit_record != NULL)
 	{
+		printf("Enter new artist name: \n");
+		fgets(edit_record->data.artist, 60, stdin);
+		edit_record->data.artist[strcspn(edit_record->data.artist, "\n")]= 0;
+
+		printf("Enter new album name: \n");
+		fgets(edit_record->data.album_title, 60, stdin);
+		edit_record->data.album_title[strcspn(edit_record->data.album_title, "\n")] = 0;
+
+		printf("Enter new song name: \n");
+		fgets(edit_record->data.song_title, 60, stdin);
+		edit_record->data.song_title[strcspn(edit_record->data.song_title, "\n")] = 0;
+
+		printf("Enter new genre name: \n");
+		fgets(edit_record->data.genre, 60, stdin);
+		edit_record->data.genre[strcspn(edit_record->data.genre, "\n")] = 0;
+
+		printf("Enter duration of song in minutes first then second: \n");
+		scanf("%d %d", &edit_record->data.song_length.minutes, &edit_record->data.song_length.seconds);
+
+		printf("How much times was it played: \n");
+		scanf("%d", &edit_record->data.times_played);
+
+		printf("On a scale of (1-5) what is your rating: \n");
+		scanf("%d", &edit_record->data.rating);
+
+		getchar();
+		
+		printf("Record has been changed!\n");
+
 
 	}
 	else
@@ -186,5 +224,6 @@ void edit_command(Node* pHead)
 		printf("No records found for this artist name %s.\n", name);
 	}
 }
+
 
 
